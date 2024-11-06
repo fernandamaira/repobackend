@@ -2,27 +2,56 @@ const UsuarioModel = require("../Models/UsuarioModel");
 
 class UsuarioController  {
     async create(req, res){
-        const usuario = await UsuarioModel.create(req.body);
-        return res.status(200).json(usuario);
+        try{
+            const usuario = await UsuarioModel.create(req.body);
+            res.status(200).json(usuario);
+
+        } catch (error){
+            res.status(500).json({message: "Deu ruim aqui!", error: error.message});
+
+        }
+
+        
     }
     async read(req, res){
-        const usuarios = await UsuarioModel.find();
+        try{
+            const usuarios = await UsuarioModel.find();
 
-        return res.status(200).json(usuarios);
+            res.status(200).json(usuarios);
+
+        } catch (error){
+            res.status(500).json({message: "Deu ruim aqui!", error: error.message});
+
+        }
+ 
     }
     async update(req, res){
-        const { id } = req.params;
+        try{
+            const { id } = req.params;
         
-        const usuario = await UsuarioModel.findByIdAndUpdate(id, req.body, {new: true});
+            const usuario = await UsuarioModel.findByIdAndUpdate(id, req.body, {new: true});
+    
+            res.status(200).json(usuario);
 
-        return res.status(200).json(usuario);
+
+        } catch (error){
+            res.status(500).json({message: "Deu ruim aqui!", error: error.message});
+
+        }
+
     }
     async delete(req, res){
-        const {id} = req.params;
-        await UsuarioModel.findByIdAndDelete(id);
+        try{
+            const {id} = req.params;
+            await UsuarioModel.findByIdAndDelete(id);
+    
+            res.status(200).json({"mensagem": "Usuário deletado com sucesso!"});
 
-        return res.status(200).json({"mensagem": "Usuário deletado com sucesso!"});
 
+        } catch (error){
+            res.status(500).json({message: "Deu ruim aqui!", error: error.message});
+
+        }
         
     }
 }
