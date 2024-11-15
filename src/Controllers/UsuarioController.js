@@ -4,7 +4,10 @@ class UsuarioController  {
     async create(req, res){
         try{
             const usuario = await UsuarioModel.create(req.body);
-            res.status(200).json(usuario);
+
+            const { senha, ...novoUsuario} = usuario.toObject();
+
+            res.status(200).json(novoUsuario);
 
         } catch (error){
             res.status(500).json({message: "Deu ruim aqui!", error: error.message});
@@ -28,8 +31,13 @@ class UsuarioController  {
     async update(req, res){
         try{
             const { id } = req.params;
+             const usuarioEncontrado = await UsuarioModel.findById(id);
+
+             if(!usuarioEncontrado) return res.status(404).json({ message: "Usuário não encontrado"});
+
+             const usuario = await usuarioEncontrado.set(req.body).save();
         
-            const usuario = await UsuarioModel.findByIdAndUpdate(id, req.body, {new: true});
+           
     
             res.status(200).json(usuario);
 
@@ -43,7 +51,14 @@ class UsuarioController  {
     async delete(req, res){
         try{
             const {id} = req.params;
-            await UsuarioModel.findByIdAndDelete(id);
+
+            const usuarioEncontrado = await UsuarioModel.findById(id);
+
+            if(!usuarioEncontrado) return res.status(404).json({ message: "Usuário não encontrado"});
+
+            await usuarioEncontrado.deleteOne();
+       
+
     
             res.status(200).json({"mensagem": "Usuário deletado com sucesso!"});
 
