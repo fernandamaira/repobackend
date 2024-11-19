@@ -1,4 +1,5 @@
 const SessoesModel = require("../Models/SessoesModel");
+//usa await quando retorna promise
 
 class SessoesController  {
     async create(req, res){

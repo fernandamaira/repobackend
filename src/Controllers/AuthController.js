@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 //token eh retornado quando a pessoa faz a requisicao do login
+//middleware eh uma funcao que processa a requisicao antes do controlador - como um validator 
 class AuthController {
     async login (req, res) {
         try {
@@ -16,13 +17,13 @@ class AuthController {
             const ehCorrespondente = await bcrypt.compare(senha, usuarioEncontrado.senha);
             if(!ehCorrespondente) return res.status(403).json({message: "E-mail ou senha inválidos"});
 
-            const { senha: hashdesenha, ...payload} = usuarioEncontrado.toObject();
+            const { senha: hashdesenha, ...usuario} = usuarioEncontrado.toObject();
             //transformar usuario retornado do mongoose em objeto padrao do javascript 
             //renomear senha pois ja tem no body da requisicao
-            // ... compilar o resto e colocar no payload (objeto)
+            // ... compilar o resto e colocar no usuario (objeto)
 
-            const token = await jwt.sign({
-                payload
+            const token = jwt.sign({
+                usuario
             }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRE_IN}); 
             //node -p "require('crypto').randomBytes(48).toString('hex');"
             //comando p gerar conjunto de caracteres p chave secreta
