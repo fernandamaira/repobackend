@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const SessoesModel = require ("../Models/SessoesModel");
 
 const Schema = mongoose.Schema;
 
@@ -31,6 +32,11 @@ UsuarioSchema.pre("save", async function (next){
         console.log({ salt, hash });
     }
 next()
+});
+
+UsuarioSchema.pre("deleteOne", { document: true, query: false }, async function (){
+    const usuario = this;
+    return SessoesModel.deleteOne ({ id_usuario: usuario._id});
 });
 
 const UsuarioModel = mongoose.model('usuarios', UsuarioSchema);
