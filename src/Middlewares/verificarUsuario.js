@@ -1,6 +1,12 @@
-function verificarUsuario(req, res, next){
+function verificarUsuario(req, res, next) {
+    
+    console.log("ID do usuário:", req.params.id_usuario);
+    const usuarioId = req.params.id || req.params.id_usuario || req.body.id_usuario;
 
-    console.log({usuarioId:req.usuarioId});
+    if (req.usuarioId !== usuarioId)
+        return res.status(401).json({message: "Operação não autorizada"});
+
     next();
 }
+
 module.exports = verificarUsuario;
